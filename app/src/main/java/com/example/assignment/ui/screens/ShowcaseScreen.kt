@@ -5,37 +5,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.assignment.model.Item
 
 
 @Composable
-fun ShowcaseScreen(onNavigateToCart: () -> Unit, onNavigateToItemDetails: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(text = "Showcase Screen")
+fun ShowcaseScreen(onItemClick: (Item) -> Unit, onCartClick: () -> Unit) {
+    val items = listOf(Item("Item 1", 10.0), Item("Item 2", 15.0), Item("Item 3", 20.0))
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(onClick = onNavigateToItemDetails) {
-            Text(text = "View Item Details")
+    Column(modifier = Modifier.fillMaxSize()) {
+        Text(text = "Showcase Screen", modifier = Modifier.padding(16.dp))
+        items.forEach { item ->
+            Button(onClick = { onItemClick(item) }, modifier = Modifier.padding(8.dp)) {
+                Text(text = item.name)
+            }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(onClick = onNavigateToCart) {
+        Button(onClick = { onCartClick() }, modifier = Modifier.padding(8.dp)) {
             Text(text = "Go to Cart")
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ShowcaseScreenPreview() {
-    ShowcaseScreen(onNavigateToCart = {}, onNavigateToItemDetails = {})
 }

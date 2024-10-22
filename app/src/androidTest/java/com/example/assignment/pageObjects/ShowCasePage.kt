@@ -14,10 +14,6 @@ class ShowCasePage(private val rule: ComposeTestRule) {
         rule.onNodeWithText(TestConstants.SECOND_ITEM).performClick()
     }
 
-    fun verifyShowCaseScreen() {
-        rule.onNodeWithText(TestConstants.SHOW_CASE_SCREEN).assertIsDisplayed()
-    }
-
     fun addItemToCart() {
         rule.onNodeWithText(TestConstants.ADD_TO_CART).performClick()
     }

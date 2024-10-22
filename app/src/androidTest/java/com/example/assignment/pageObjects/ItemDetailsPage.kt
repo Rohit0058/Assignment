@@ -10,7 +10,7 @@ class ItemDetailsPage(private val rule: ComposeTestRule) {
         rule.onNodeWithText(TestConstants.ADD_TO_CART).performClick()
     }
 
-    fun goBack() {
-        rule.onNodeWithText(TestConstants.BACK).performClick()
+    fun goBackToShowCase() {
+        rule.onNodeWithText(TestConstants.BACK_TO_SHOWCASE).performClick()
     }
 }

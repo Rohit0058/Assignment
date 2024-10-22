@@ -8,9 +8,6 @@
       <SelectionState runConfigName="testPurchaseFlow()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="PurchaseFlowTest">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="PurchaseFlowTest (1)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>

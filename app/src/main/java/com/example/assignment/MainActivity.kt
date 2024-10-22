@@ -11,25 +11,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.assignment.model.Cart
 import com.example.assignment.ui.screens.CartScreen
 import com.example.assignment.ui.screens.CheckoutScreen
+import com.example.assignment.ui.screens.ConfirmPurchaseScreen
 import com.example.assignment.ui.screens.ItemDetailsScreen
 import com.example.assignment.ui.screens.LoginScreen
+import com.example.assignment.ui.screens.Screen
 import com.example.assignment.ui.screens.ShowcaseScreen
 import com.example.assignment.ui.theme.AssignmentTheme
 
-
-// Enum to manage screens
-enum class Screen {
-    Login,
-    Showcase,
-    Cart,
-    ItemDetails,
-    Checkout
-}
-
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -42,22 +34,47 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// Cart instance created to handle cart operations
+private val cart = Cart()
+
 @Composable
 fun AppContent() {
-    var currentScreen by remember { mutableStateOf(Screen.Login) }  // Manage screen state
+    var currentScreen by remember { mutableStateOf<Screen>(Screen.Login) }  // Manage screen state
 
     when (currentScreen) {
-        Screen.Login -> LoginScreen(onLoginSuccess = { currentScreen = Screen.Showcase })  // Navigate to ShowcaseScreen
+        Screen.Login -> LoginScreen(onLoginSuccess = {
+            currentScreen = Screen.Showcase
+        })
         Screen.Showcase -> ShowcaseScreen(
-            onNavigateToCart = { currentScreen = Screen.Cart },
-            onNavigateToItemDetails = { currentScreen = Screen.ItemDetails }
-        )  // Navigate to ItemDetailsScreen
-        Screen.Cart -> CartScreen(
-            onNavigateBack = { currentScreen = Screen.Showcase },
-            onProceedToCheckout = { currentScreen = Screen.Checkout }  // Navigate to CheckoutScreen
+            onItemClick = { item ->
+                currentScreen = Screen.ItemDetails(item)
+            },
+            onCartClick = {
+                currentScreen = Screen.Cart
+            }
         )
-        Screen.ItemDetails -> ItemDetailsScreen(onNavigateBack = { currentScreen = Screen.Showcase })  // Navigate back to ShowcaseScreen
-        Screen.Checkout -> CheckoutScreen(onNavigateBack = { currentScreen = Screen.Showcase })  // Navigate back to ShowcaseScreen
+        is Screen.ItemDetails -> {
+            val item = (currentScreen as Screen.ItemDetails).item
+            ItemDetailsScreen(
+                item = item,
+                onAddToCart = {
+                    cart.addItem(item) // Add item to cart without navigating away
+                },
+                onBackToShowcase = {
+                    currentScreen = Screen.Showcase // Navigate back to Showcase
+                }
+            )
+        }
+        Screen.Cart -> CartScreen(cart = cart, onCheckout = {
+            currentScreen = Screen.Checkout
+        })
+        Screen.Checkout -> CheckoutScreen(onConfirmPurchase = {
+            currentScreen = Screen.ConfirmPurchase
+        })
+        Screen.ConfirmPurchase -> ConfirmPurchaseScreen(onFinish = {
+            cart.clearCart()
+            currentScreen = Screen.Showcase
+        })
     }
 }
 
