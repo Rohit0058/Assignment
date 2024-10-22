@@ -1,11 +1,14 @@
 package com.example.assignment.tests
 
+import android.content.Context
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.test.core.app.ApplicationProvider
 import com.example.assignment.AppContent
 import org.junit.Rule
 import org.junit.Test
 import com.example.assignment.pageObjects.*
 import com.example.assignment.utils.TestConstants
+import com.example.assignment.utils.TestLogger
 import com.example.assignment.utils.TestUtils
 import org.junit.Before
 
@@ -13,7 +16,7 @@ import org.junit.Before
 class PurchaseFlowTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val composeTestRule = createComposeRule() // Creates the Compose test rule
 
     private lateinit var loginPage: LoginPage
     private lateinit var showcasePage: ShowCasePage
@@ -22,6 +25,13 @@ class PurchaseFlowTest {
     private lateinit var checkoutPage: CheckoutPage
     private lateinit var testUtils: TestUtils
 
+    /* Scenario 2.2 -
+     "before steps" refer to actions that are executed before the main test logic runs.
+     They are crucial for establishing a consistent state and preparing the environment for the test.
+     Before steps are a foundational part of a well-structured testing strategy,
+     ensuring that tests are reliable, maintainable,and easy to understand.
+     They help ensure that the conditions are right for your tests to run accurately
+     and provide meaningful results */
     @Before
     fun setup() {
         // Set the content to the starting screen for testing
@@ -39,41 +49,81 @@ class PurchaseFlowTest {
         checkoutPage = CheckoutPage(composeTestRule)
     }
 
+    //Scenario 1 - End to End Test for Purchase Flow
     @Test
     fun testPurchaseFlow() {
-        // Execute E2E Purchase Flow
+        // try catch in order to show failure logs
+        try {
+            // Execute E2E Purchase Flow
+            // Ensuring we are on the Login Screen
+            testUtils.assertScreenIsDisplayed(TestConstants.LOGIN_SCREEN)
 
-        testUtils.assertScreenIsDisplayed(TestConstants.LOGIN_SCREEN)
-        loginPage.login() // Simulate login
+            // Step 1: Simulate login on Clicking Login Button
+            TestLogger.info("Attempting to log in.")
+            loginPage.login()
 
-        testUtils.assertScreenIsDisplayed(TestConstants.SHOW_CASE_SCREEN)
+            // Ensuring we are on the ShowCase Screen
+            testUtils.assertScreenIsDisplayed(TestConstants.SHOW_CASE_SCREEN)
 
-        showcasePage.selectFirstItem()
-        itemDetailsPage.addToCart()
-        itemDetailsPage.goBackToShowCase()
+            // Step 2: Selecting Item 1
+            TestLogger.info("Selecting the first item from the Showcase.")
+            showcasePage.selectFirstItem()
 
-        testUtils.assertScreenIsDisplayed(TestConstants.SHOW_CASE_SCREEN)
+            // Step 3: Adding Item 1 To Cart
+            TestLogger.info("Adding the selected item to the cart.")
+            itemDetailsPage.addToCart()
 
-        showcasePage.selectSecondItem()
-        showcasePage.addItemToCart()
-        itemDetailsPage.goBackToShowCase()
+            // Step 4: Going Back To Showcase Screen
+            TestLogger.info("Navigating back to Showcase.")
+            itemDetailsPage.goBackToShowCase()
 
-        testUtils.assertScreenIsDisplayed(TestConstants.SHOW_CASE_SCREEN)
+            // Ensuring we are back on the ShowCase Screen
+            TestLogger.info("Selecting the second item from the Showcase.")
+            testUtils.assertScreenIsDisplayed(TestConstants.SHOW_CASE_SCREEN)
 
-        showcasePage.goToCart()
+            // Step 5: Selecting Item 2
+            TestLogger.info("Adding the second item to the cart.")
+            showcasePage.selectSecondItem()
 
-        testUtils.assertScreenIsDisplayed(TestConstants.CART_SCREEN)
+            // Step 6: Adding Item 1 To Cart
+            TestLogger.info("Going to the cart.")
+            showcasePage.addItemToCart()
 
-        testUtils.assertCartItemCount(2)
+            // Step 7: Going Back To Showcase Screen
+            TestLogger.info("Navigating back to Showcase.")
+            itemDetailsPage.goBackToShowCase()
 
-        // Proceed to checkout
-        cartPage.proceedToCheckout()
+            // Ensuring we are back on the ShowCase Screen
+            testUtils.assertScreenIsDisplayed(TestConstants.SHOW_CASE_SCREEN)
 
-        // Complete purchase
-        testUtils.assertScreenIsDisplayed(TestConstants.CHECKOUT_SCREEN)
-        checkoutPage.completePurchase()
+            // Step 7: Proceeding To Cart
+            TestLogger.info("Proceeding to checkout.")
+            showcasePage.goToCart()
 
-        // Verify success message
-        testUtils.assertScreenIsDisplayed(TestConstants.SUCCESS_MESSAGE)
+            // Ensuring we are on the Cart Screen
+            testUtils.assertScreenIsDisplayed(TestConstants.CART_SCREEN)
+
+            // Step 8: Verifying the Items Count
+            TestLogger.info("Verifying Items Count")
+            testUtils.assertCartItemCount(2)
+
+            // Step 9: Proceeding to checkout
+            TestLogger.info("Proceeding to Checkout.")
+            cartPage.proceedToCheckout()
+
+            // Ensuring we are on the Checkout Screen
+            testUtils.assertScreenIsDisplayed(TestConstants.CHECKOUT_SCREEN)
+
+            // Step 10: Completing the purchase
+            TestLogger.info("Completing the purchase.")
+            checkoutPage.completePurchase()
+
+            // Step 11: Verifying Success Message Screen
+            testUtils.assertScreenIsDisplayed(TestConstants.SUCCESS_MESSAGE)
+            TestLogger.info("Purchase flow test completed successfully.")
+
+        } catch (e: Exception) {
+            TestLogger.error("Test failed: ${e.message}")
+        }
     }
 }
