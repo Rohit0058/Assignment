@@ -2,19 +2,22 @@
  Please Clone this Repo, open it in Android Studio, do Gradle Build and Execute the PurchaseFlowTest.kt
  
  Structure -> 
- - androidTest
-  - pageObjects
+--- androidTest
+  
+  -- pageObjects
     - CartPage.kt
     - CheckoutPage.kt
     - LoginPage.kt
     - ShowcasePage.kt
     - ItemDetailsPage.kt
-  -tests
+  
+  --tests
     - PurchaseFlowTest.kt
-  -utils
-    - TestConstants
-    - TestUtils
-    - TestLogger
+  
+  --utils
+    - TestConstants.kt
+    - TestUtils.kt
+    - TestLogger.kt
    
   Scenario 1 -> Please Refer to PurchaseFlowTest.kt along by referring the above Structure 
 
